@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
         
-pragma solidity >=0.8.00 <0.9.0;
+pragma solidity >=0.4.22 <0.9.0;
 
 // This import is automatically injected by Remix
 import "remix_tests.sol"; 
@@ -33,14 +33,20 @@ contract testSuite {
         acc4 = TestsAccounts.getAccount (4) ;
     }
 
+    /// Testing newBuilding constructor, and a few public functions.
     function checkConstructorSuccess() public {
-        string memory BuildingName = "testBuilding";
-        newBuilding_test = new newBuilding(acc0,BuildingName);
-        string memory buildingAddr_str = Strings.toHexString(address(newBuilding_test));
-        string memory developerAddr_str = Strings.toHexString(address(acc0));
+        // Initilised new building contract by calling constuctor
+        newBuilding_test = new newBuilding(acc0,"testBuilding");
         Assert.ok(true , "Method execution should be ok");
-        string memory res_str  = string(abi.encodePacked( "(Building's Name: ", " -> ", BuildingName, " ) ", "(Building's Address: ", " -> ", buildingAddr_str, " ) ", "(Developer's Address: ", " -> ", developerAddr_str , " ) \n" ));
-        Assert.equal(newBuilding_test.generalInfo(), res_str, "should be yes");
+        // Testing the public function get general info directly after calling the constructor.
+        (string memory Building_Name, address Building_Address, address Developer_Address) = newBuilding_test.generalInfo();
+        Assert.equal("testBuilding", Building_Name, "should be same return string");
+        Assert.equal(address(newBuilding_test), Building_Address, "should be same return Address");
+        Assert.equal(address(acc0), Developer_Address, "should be same return Address");
+        string[] memory listMaterials = newBuilding_test.showListOfMaterials();
+        string[1] memory listMaterialsAns = [''];
+        Assert.equal(listMaterialsAns[0], listMaterials[0], "should be same return string");
+
     }
     
 

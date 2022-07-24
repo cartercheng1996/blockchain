@@ -133,11 +133,11 @@
 			]
 		},
 		"contracts/newBuilding.sol": {
-			"keccak256": "0xef9eb3d6712bdf4ab5d58669eeca8960328c5c05f1f93087972cbeeda41a57cb",
+			"keccak256": "0xe35c9f2c950fd47d38ec211f574952124630bca93ff137489871c9f553216d05",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://76dcc526f30006272c1e48032e3898b477cad309f7e930a28fb39a5c2fa2f4ff",
-				"dweb:/ipfs/QmaoqskCxEGT5BDQNS49rzhGKC45HJBQJx4PQHubsov7xc"
+				"bzz-raw://b63e40c6db9d45132ac0b769bfda6a031084eadb192404c2889fb380c43a85fb",
+				"dweb:/ipfs/QmTsULPbSCyqnetfM2Xt7chGLMeQf9WZgJJZMQJKesKWEc"
 			]
 		},
 		"contracts/newBuildingFactory.sol": {
@@ -146,6 +146,14 @@
 			"urls": [
 				"bzz-raw://83fdfb8895dc9bbf354b6d747fa757ad8cfc951309ecc4291b36facf1fa56819",
 				"dweb:/ipfs/QmZegdggmCpQcBF5sBfE1HiER8ifj4fmuM21qmuPnh499F"
+			]
+		},
+		"https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol": {
+			"keccak256": "0xf75784dfc94ea43668eb195d5690a1dde1b6eda62017e73a3899721583821d29",
+			"license": "Unlicense",
+			"urls": [
+				"bzz-raw://ca16cef8b94f3ac75d376489a668618f6c4595a906b939d674a883f4bf426014",
+				"dweb:/ipfs/QmceGU7qhyFLSejaj6i4dEtMzXDCSF3aYDtW1UeKjXQaRn"
 			]
 		}
 	},

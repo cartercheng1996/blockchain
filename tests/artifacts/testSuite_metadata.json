@@ -58,6 +58,9 @@
 				"beforeAll()": {
 					"notice": "'beforeAll' runs before all other tests More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'"
 				},
+				"checkConstructorSuccess()": {
+					"notice": "Testing newBuilding constructor, and a few public functions."
+				},
 				"checkSenderAndValue()": {
 					"notice": "Custom Transaction Context: https://remix-ide.readthedocs.io/en/latest/unittesting.html#customization #sender: account-1 #value: 100"
 				},
@@ -93,11 +96,19 @@
 			]
 		},
 		"contracts/newBuilding.sol": {
-			"keccak256": "0xef9eb3d6712bdf4ab5d58669eeca8960328c5c05f1f93087972cbeeda41a57cb",
+			"keccak256": "0x109a625e743c557d4e46986240714fda602e59e3b348bb2f20a5ad997b69875f",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://76dcc526f30006272c1e48032e3898b477cad309f7e930a28fb39a5c2fa2f4ff",
-				"dweb:/ipfs/QmaoqskCxEGT5BDQNS49rzhGKC45HJBQJx4PQHubsov7xc"
+				"bzz-raw://3aac9c9afccc0bc011f717578ccb5a81d59465c9c93fa687664a8cabec598a1e",
+				"dweb:/ipfs/QmVNQG94bVy8E32bvnxHqvMduTND7FnyHwfD86kXeJhsgV"
+			]
+		},
+		"https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol": {
+			"keccak256": "0xf75784dfc94ea43668eb195d5690a1dde1b6eda62017e73a3899721583821d29",
+			"license": "Unlicense",
+			"urls": [
+				"bzz-raw://ca16cef8b94f3ac75d376489a668618f6c4595a906b939d674a883f4bf426014",
+				"dweb:/ipfs/QmceGU7qhyFLSejaj6i4dEtMzXDCSF3aYDtW1UeKjXQaRn"
 			]
 		},
 		"remix_accounts.sol": {
@@ -117,11 +128,11 @@
 			]
 		},
 		"tests/newBuilding_test.sol": {
-			"keccak256": "0x589b795688afbb40e5285dc82ba03ee9861f044ee3908be7fc820d905050a570",
+			"keccak256": "0x5d9a5102c4601711c1aa9b7bdbefdd0e6f05b1b7e0a4e51f8ada2f8f0dc2fa3c",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://d0f9881c02427af899985ac0d31dfe36ec300066b6b01a85276ca6cf3acf6683",
-				"dweb:/ipfs/QmfFRduN1w17aov9Vkbu14k5p6qMun57uX9H6quuZEgKVN"
+				"bzz-raw://9941ab1068270cc111d7f5e1cd45ea9d10999b11fd91d54146eca43689bbb178",
+				"dweb:/ipfs/QmUuES7f8KmYTfXA637BrpjCQDHDGfHUjY9THobs5XzniE"
 			]
 		}
 	},
