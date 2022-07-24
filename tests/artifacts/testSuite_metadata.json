@@ -128,11 +128,11 @@
 			]
 		},
 		"tests/newBuilding_test.sol": {
-			"keccak256": "0x5d9a5102c4601711c1aa9b7bdbefdd0e6f05b1b7e0a4e51f8ada2f8f0dc2fa3c",
+			"keccak256": "0x3513a110e6edea136254eb827dc721e8ec0ed9796cad1bdc48d11a602f432fff",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9941ab1068270cc111d7f5e1cd45ea9d10999b11fd91d54146eca43689bbb178",
-				"dweb:/ipfs/QmUuES7f8KmYTfXA637BrpjCQDHDGfHUjY9THobs5XzniE"
+				"bzz-raw://c3b33a35b7cf0a2b99d346e4d2660d77ac405933f135c52c3e4feb7e3ab0bac2",
+				"dweb:/ipfs/QmcUd22cVXzW1mZqGysy9gA58WFMb6NyXffpLmMiUkarrU"
 			]
 		}
 	},

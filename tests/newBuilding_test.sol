@@ -43,6 +43,7 @@ contract testSuite {
         Assert.equal("testBuilding", Building_Name, "should be same return string");
         Assert.equal(address(newBuilding_test), Building_Address, "should be same return Address");
         Assert.equal(address(acc0), Developer_Address, "should be same return Address");
+        // thes list material function when it is empty list just after calling constructor.
         string[] memory listMaterials = newBuilding_test.showListOfMaterials();
         string[1] memory listMaterialsAns = [''];
         Assert.equal(listMaterialsAns[0], listMaterials[0], "should be same return string");
