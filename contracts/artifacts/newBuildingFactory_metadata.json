@@ -1,0 +1,153 @@
+{
+	"compiler": {
+		"version": "0.8.0+commit.c7dfd78e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "buildingName_",
+						"type": "string"
+					}
+				],
+				"name": "createNewBuilding",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "completedBuildingAddress",
+						"type": "address"
+					}
+				],
+				"name": "disableCompletedBuilding",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "wrongContractAddress",
+						"type": "address"
+					}
+				],
+				"name": "disableWrongContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "contractAddress",
+						"type": "address"
+					}
+				],
+				"name": "re_enableContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "showListOfCompletedBuildings",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "allCompletedBuildings",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "showListOfNewBuildings",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "allNewBuildings",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "showListOfWrongContracts",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "allWrongContracts",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/newBuildingFactory.sol": "newBuildingFactory"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0xaf159a8b1923ad2a26d516089bceca9bdeaeacd04be50983ea00ba63070f08a3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6f2cf1c531122bc7ca96b8c8db6a60deae60441e5223065e792553d4849b5638",
+				"dweb:/ipfs/QmPBdJmBBABMDCfyDjCbdxgiqRavgiSL88SYPGibgbPas9"
+			]
+		},
+		"contracts/newBuilding.sol": {
+			"keccak256": "0xef9eb3d6712bdf4ab5d58669eeca8960328c5c05f1f93087972cbeeda41a57cb",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://76dcc526f30006272c1e48032e3898b477cad309f7e930a28fb39a5c2fa2f4ff",
+				"dweb:/ipfs/QmaoqskCxEGT5BDQNS49rzhGKC45HJBQJx4PQHubsov7xc"
+			]
+		},
+		"contracts/newBuildingFactory.sol": {
+			"keccak256": "0xae2dd10e1838a164fbe3e42f362f562c2a699293fad5f7698f84ad57cb2a88fc",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://83fdfb8895dc9bbf354b6d747fa757ad8cfc951309ecc4291b36facf1fa56819",
+				"dweb:/ipfs/QmZegdggmCpQcBF5sBfE1HiER8ifj4fmuM21qmuPnh499F"
+			]
+		}
+	},
+	"version": 1
+}
