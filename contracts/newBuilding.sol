@@ -3,6 +3,7 @@
 pragma solidity >=0.8.00 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol";
 
 
 
@@ -29,13 +30,20 @@ contract newBuilding {
                                             //supposed to be executed only from paren factory address
     uint private assignement_number = 1; //starting number of assignemt for material batch. It is needed as the same material batch contract can be assigned to the building more than once by different contractors
     
-    string[] private listOfMaterials; //variable to record all different names of materials and then group all assigned materials by these different names (i.e. steel, glass etc.)
+    string[] private listOfMaterials=['']; //variable to record all different names of materials and then group all assigned materials by these different names (i.e. steel, glass etc.)
     mapping (string => Batch[]) private listOfBatches; //(name of material from 'listOfMaterials' => array of 'Batch' to store all batches related to the same name of material)
     
     mapping (uint => supplier[]) private supplyChain; // (assignementId -> string of all previous material owners)
     
     address[] private allContractorsAddresses; // array to store addresses of all contractors to be able later to loop through them and retrieve contractor's name from mapping 'listOfContractors'
     mapping (address => string) private listOfContractors; //(contractor's address => contractor's name)
+
+    //this structure is created as auxiliary for temporary storage and returning from 'showAllRegisteredContractors' function
+    struct tempContractor {
+        string name;
+        address addr;
+    }
+
     
     address private Developer;
     address private BuildingAddress;
@@ -57,11 +65,11 @@ contract newBuilding {
 //===================FOR PUBLIC TO QUERY=====================================================================================    
     
     
-    function generalInfo () public view returns (string memory generalInformation) {
-        string memory developerAddr_str = Strings.toHexString(Developer);
-        string memory buildingAddr_str = Strings.toHexString(BuildingAddress);
-        generalInformation = string(abi.encodePacked( "(Building's Name: ", " -> ", BuildingName, " ) ", "(Building's Address: ", " -> ", buildingAddr_str, " ) ", "(Developer's Address: ", " -> ", developerAddr_str , " ) \n" ));
-        return generalInformation;
+    function generalInfo () public view returns (string memory Building_Name, address Building_Address, address Developer_Address) {
+        Building_Name = BuildingName;
+        Building_Address = BuildingAddress;
+        Developer_Address = Developer;
+        return (Building_Name, Building_Address, Developer_Address);
     }
     
     
@@ -70,31 +78,26 @@ contract newBuilding {
 
 
     // function to see all materil names assigned to the building (i.e. steel, glass, timber etc.)
-    function showListOfMaterials () public view returns (string memory materialsList ) {
-        materialsList = ":\n";
-        for (uint i=0; i<listOfMaterials.length-1; i++) {
-            materialsList = string(abi.encodePacked(materialsList, listOfMaterials[i], ",\n"));
-        }
-        materialsList = string(abi.encodePacked(materialsList, listOfMaterials[listOfMaterials.length-1]));
-        return materialsList;
+    function showListOfMaterials () public view returns (string[] memory ) {
+        
+        return listOfMaterials;
     }
 
 
     // function allowing public to see all batches of particular material (e.g. steel) assigned to the building and find address and 'assignementId' for batch of interest
-    function showOverviewOfMaterial (string memory material) public view returns  (string memory batchesList) { 
+    function showOverviewOfMaterial (string memory material) public view returns  (Batch[] memory) { 
         //https://www.cloudhadoop.com/solidity-mapping-check-object-exists/ 
         require((listOfBatches[material].length > 0) == true, "Please try again as requested material was not found");         
-        batchesList = ":\n";
-        string memory id_str;
-        string memory contract_str;
-        string memory quantity_str; 
-        string memory unit_str;
+        Batch[] memory batchesList = new Batch[](listOfBatches[material].length);
+
+
         for (uint i=0; i<listOfBatches[material].length; i++) {
-            id_str = Strings.toString(listOfBatches[material][i].assignementId);
-            contract_str = Strings.toHexString(listOfBatches[material][i].batchContractAddress);
-            quantity_str = Strings.toString(listOfBatches[material][i].quantityAssigned);
-            unit_str = listOfBatches[material][i].quantityUnit;
-            batchesList = string(abi.encodePacked( batchesList, " ( ", contract_str , " -> ", quantity_str , unit_str, " -> ", id_str,   " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            Batch memory ba;
+            ba.assignementId = listOfBatches[material][i].assignementId;
+            ba.batchContractAddress = listOfBatches[material][i].batchContractAddress;
+            ba.quantityAssigned = listOfBatches[material][i].quantityAssigned;
+            ba.quantityUnit = listOfBatches[material][i].quantityUnit;
+            batchesList[i] = ba;  
         }
         return batchesList;
         
@@ -102,8 +105,8 @@ contract newBuilding {
 
     // function which allows public to see whole supply chain of the material assigned at particular 'assignementId'
     function showSupplyChain (uint assignId) public view returns (string memory chainOfSupply) {
-        require((supplyChain[assignId].length > 0) == true, "Please try again as requested batch address was not found");
-        chainOfSupply = ":\n";
+        require((supplyChain[assignId].length > 0) == true, "Please try again as requested supply chain number was not found");
+        chainOfSupply = "\n";
         string memory  supplier_address_str;
         string memory supplier_name;
         
@@ -111,21 +114,21 @@ contract newBuilding {
             supplier_address_str = Strings.toHexString(supplyChain[assignId][i].supplierAddress);
             supplier_name = supplyChain[assignId][i].supplierName;
             
-            chainOfSupply = string(abi.encodePacked( chainOfSupply, " ( ", supplier_address_str, " -> ", supplier_name , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            chainOfSupply = string(abi.encodePacked( chainOfSupply, " ( ", supplier_address_str, " : ", supplier_name , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
         }
         
         return chainOfSupply;
     } 
 
     // function allowing public to see all contractors registered on the building of interest
-    function showAllRegisteredContractors() public view returns (string memory allContractors) {
-        allContractors = ":\n";
-        string memory  contractor_address_str;
-        string memory contractor_name;
+    function showAllRegisteredContractors() public view returns (tempContractor[] memory) {
+        tempContractor[] memory allContractors = new tempContractor[](allContractorsAddresses.length);
+        
         for (uint i=0; i<allContractorsAddresses.length; i++) {
-           contractor_address_str = Strings.toHexString(allContractorsAddresses[i]);
-           contractor_name = listOfContractors[allContractorsAddresses[i]];
-           allContractors = string(abi.encodePacked( allContractors, " ( ", contractor_address_str , " -> ", contractor_name , " ) \n" ));
+            tempContractor memory tc;
+            tc.name = listOfContractors[allContractorsAddresses[i]];
+            tc.addr = allContractorsAddresses[i];
+            allContractors[i] = tc;
         }
         return allContractors;
     } 
@@ -164,8 +167,8 @@ contract newBuilding {
 //===================FOR REGISTERED CONTRACTOR TO ASSIGNING MATERIAL===========================================================
     
     //function for registered contractors to assign material and provide all data about this assigned material
-    function assignMaterial (string memory material, address batchAddress, uint quantity, string memory unit, supplier[] memory chain) public onlyByRegisteredContractor disabledContract { 
-        
+    function assignMaterial (string memory material, uint quantity, string memory unit, address[] memory supplAddresses, string[] memory supplNames, address batchAddress) external onlyByRegisteredContractor disabledContract {  // , 
+               
         if (listOfBatches[material].length == 0) { //check whether material name already exists
             listOfMaterials.push(material);
         }
@@ -177,22 +180,24 @@ contract newBuilding {
         b.quantityUnit = unit;
         listOfBatches[material].push(b);
         
-        for (uint i=0; i<chain.length; i++) {
-            supplyChain[assignement_number].push(chain[i]);
+        supplier memory sup;
+
+        for (uint i=0; i<supplAddresses.length; i++) {
+            sup.supplierAddress = supplAddresses[i];
+            sup.supplierName = supplNames[i];
+            supplyChain[assignement_number].push(sup);
         }
 
-        //it might be needed or not depending on  what is passed from contractor side contract
-        supplier memory s;
-        s.supplierAddress = msg.sender;
-        s.supplierName = listOfContractors[msg.sender];
-        supplyChain[assignement_number].push(s);
+        //updating contractor's name with the name recorded by developer during contractor's registration to avoid confusion whiich might be caused if
+        //contractor's name is different in list of registered contractors to name recorded on batch certificate (in any case contractor's address will be identical in both records)
+        supplyChain[assignement_number][supplyChain[assignement_number].length - 1].supplierName = listOfContractors[tx.origin];
         
         assignement_number++;
     }
 
 
     modifier onlyByRegisteredContractor() {
-        require(bytes(listOfContractors[msg.sender]).length != 0, "Can only be executed by the registered Contractor" );
+        require(bytes(listOfContractors[tx.origin]).length != 0, "Can only be executed by the registered Contractor" );
         _;
     }
 
@@ -213,3 +218,4 @@ contract newBuilding {
     }
 
 }    
+
