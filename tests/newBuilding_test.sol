@@ -20,6 +20,11 @@ contract testSuite {
     address acc3 ;
     address acc4 ;
     newBuilding newBuilding_test;
+    //this structure is created as auxiliary for temporary storage and returning from 'showAllRegisteredContractors' function
+    struct tempContractor {
+        string name;
+        address addr;
+    }
 
     /// 'beforeAll' runs before all other tests
     /// More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'
@@ -47,6 +52,8 @@ contract testSuite {
         string[] memory listMaterials = newBuilding_test.showListOfMaterials();
         string[1] memory listMaterialsAns = [''];
         Assert.equal(listMaterialsAns[0], listMaterials[0], "should be same return string");
+        newBuilding_test.showAllRegisteredContractors ();
+        Assert.ok(true , "function execution should be ok");
 
     }
     
