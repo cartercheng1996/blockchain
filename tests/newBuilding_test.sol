@@ -20,11 +20,6 @@ contract testSuite {
     address acc3 ;
     address acc4 ;
     newBuilding newBuilding_test;
-    //this structure is created as auxiliary for temporary storage and returning from 'showAllRegisteredContractors' function
-    struct tempContractor {
-        string name;
-        address addr;
-    }
 
     /// 'beforeAll' runs before all other tests
     /// More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'
@@ -48,13 +43,17 @@ contract testSuite {
         Assert.equal("testBuilding", Building_Name, "should be same return string");
         Assert.equal(address(newBuilding_test), Building_Address, "should be same return Address");
         Assert.equal(address(acc0), Developer_Address, "should be same return Address");
-        // thes list material function when it is empty list just after calling constructor.
+        // test list material function when it is empty list just after calling constructor.
         string[] memory listMaterials = newBuilding_test.showListOfMaterials();
         string[1] memory listMaterialsAns = [''];
         Assert.equal(listMaterialsAns[0], listMaterials[0], "should be same return string");
-        newBuilding_test.showAllRegisteredContractors ();
-        Assert.ok(true , "function execution should be ok");
-
+        // test showAllRegisteredContractors function when it is empty list just after calling constructor.
+        newBuilding.tempContractor[] memory allContractor;
+        allContractor = newBuilding_test.showAllRegisteredContractors ();
+        // test showAllRegisteredContractors function when it is empty list just after calling constructor.
+        Assert.equal(allContractor.length, 1, "Should be only one register contractor in array when it is just initilised");
+        Assert.equal(allContractor[0].name, "Developer", "should be same name as Developer");
+        Assert.equal(allContractor[0].addr, acc0, "should be same address as acc0");
     }
     
 
