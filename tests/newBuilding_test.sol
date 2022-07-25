@@ -10,6 +10,7 @@ import "remix_tests.sol";
 // But it will work fine in 'Solidity Unit Testing' plugin
 import "remix_accounts.sol";
 import "../contracts/newBuilding.sol";
+import "../contracts/newBatch.sol";
 
 // File name has to end with '_test.sol', this file can contain more than one testSuite contracts
 contract testSuite {
@@ -20,6 +21,7 @@ contract testSuite {
     address acc3;
     address acc4;
     newBuilding newBuilding_test;
+    newBatch newBatch_test;
 
     /// 'beforeAll' runs before all other tests
     /// More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'
@@ -61,12 +63,7 @@ contract testSuite {
         );
         // test list material function when it is empty list just after calling constructor.
         string[] memory listMaterials = newBuilding_test.showListOfMaterials();
-        string[1] memory listMaterialsAns = [""];
-        Assert.equal(
-            listMaterialsAns[0],
-            listMaterials[0],
-            "should be same return string"
-        );
+        Assert.equal(listMaterials.length, 0, "should be same return string");
         // test showAllRegisteredContractors function when it is empty list just after calling constructor.
         newBuilding.tempContractor[] memory allContractor;
         allContractor = newBuilding_test.showAllRegisteredContractors();
@@ -89,12 +86,18 @@ contract testSuite {
         newBuilding_test.showSupplyChain(1);
         Assert.ok(true, "Method execution should be ok");
         // test showOverviewOfMaterial with requested material was not found
-        try newBuilding_test.showOverviewOfMaterial("steel"){
-            Assert.ok(false , "Method execution should fail");
-        } catch Error ( string memory reason ) {
-            Assert.equal (reason , "Please try again as requested material was not found", "Failed with unexpected reason");
-        } catch ( bytes memory /* lowLevelData */) {
-            Assert.ok(false , "Failed unexpected");
+        try newBuilding_test.showOverviewOfMaterial("steel") {
+            Assert.ok(false, "Method execution should fail");
+        } catch Error(string memory reason) {
+            Assert.equal(
+                reason,
+                "Please try again as requested material was not found",
+                "Failed with unexpected reason"
+            );
+        } catch (
+            bytes memory /* lowLevelData */
+        ) {
+            Assert.ok(false, "Failed unexpected");
         }
     }
 
@@ -102,16 +105,20 @@ contract testSuite {
     /// #sender: account-1
     function checkaddContractorFailed() public {
         string memory str1 = "testConstructor1";
-        try newBuilding_test.addContractor(acc0, str1){
-            Assert.ok(false , "Method execution should fail");
-        } catch Error ( string memory reason ) {
-            Assert.equal (reason , "Can only be executed by the Developer", "Failed with unexpected reason");
-        } catch ( bytes memory /* lowLevelData */) {
-            Assert.ok(false , "Failed unexpected");
+        try newBuilding_test.addContractor(acc0, str1) {
+            Assert.ok(false, "Method execution should fail");
+        } catch Error(string memory reason) {
+            Assert.equal(
+                reason,
+                "Can only be executed by the Developer",
+                "Failed with unexpected reason"
+            );
+        } catch (
+            bytes memory /* lowLevelData */
+        ) {
+            Assert.ok(false, "Failed unexpected");
         }
     }
-
-
 
     /// This will cause error if addContractor modifier onlyByDeveloper has msg.sender == Developer, modify to tx.origin == Developer
     /// This is to test if addContractor function can add another contractor and showAllRegisteredContractors function
@@ -127,12 +134,18 @@ contract testSuite {
     /// #sender: account-0
     function checkaddContractorFailed2() public {
         string memory str1 = "testConstructor1";
-        try newBuilding_test.addContractor(acc0, str1){
-            Assert.ok(false , "Method execution should fail");
-        } catch Error ( string memory reason ) {
-            Assert.equal (reason , "Contractor is already registered", "Failed with unexpected reason");
-        } catch ( bytes memory /* lowLevelData */) {
-            Assert.ok(false , "Failed unexpected");
+        try newBuilding_test.addContractor(acc0, str1) {
+            Assert.ok(false, "Method execution should fail");
+        } catch Error(string memory reason) {
+            Assert.equal(
+                reason,
+                "Contractor is already registered",
+                "Failed with unexpected reason"
+            );
+        } catch (
+            bytes memory /* lowLevelData */
+        ) {
+            Assert.ok(false, "Failed unexpected");
         }
     }
 
@@ -166,11 +179,22 @@ contract testSuite {
             acc1,
             "should be same address as acc1"
         );
-
-    }
-    function checkassignMaterialSuccess() public pure returns (bool) {
-        // Use the return value (true or false) to test the contract
-        return true;
     }
 
+    function checkassignMaterialSuccess() public {
+        // Initilised new building contract by calling constuctor
+        newBatch_test = new newBatch(acc3, "ABCsteel", "steel", 2, "ton");
+        address[] memory supplAddresses = new address[](1);
+        supplAddresses[0] = (address(acc3));
+        string[] memory supplNames = new string[](1);
+        supplNames[0] = ("ABCsteel");
+        newBuilding_test.assignMaterial(
+            "steel",
+            10,
+            "ton",
+            supplAddresses,
+            supplNames,
+            address(newBatch_test)
+        );
+    }
 }

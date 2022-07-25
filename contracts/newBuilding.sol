@@ -30,7 +30,7 @@ contract newBuilding {
                                             //supposed to be executed only from paren factory address
     uint private assignement_number = 1; //starting number of assignemt for material batch. It is needed as the same material batch contract can be assigned to the building more than once by different contractors
     
-    string[] private listOfMaterials=['']; //variable to record all different names of materials and then group all assigned materials by these different names (i.e. steel, glass etc.)
+    string[] private listOfMaterials; //=['']? variable to record all different names of materials and then group all assigned materials by these different names (i.e. steel, glass etc.)
     mapping (string => Batch[]) private listOfBatches; //(name of material from 'listOfMaterials' => array of 'Batch' to store all batches related to the same name of material)
     
     mapping (uint => supplier[]) private supplyChain; // (assignementId -> string of all previous material owners)
@@ -114,9 +114,9 @@ contract newBuilding {
             supplier_address_str = Strings.toHexString(supplyChain[assignId][i].supplierAddress);
             supplier_name = supplyChain[assignId][i].supplierName;
             
-            chainOfSupply = string(abi.encodePacked( chainOfSupply, " ( ", supplier_address_str, " : ", supplier_name , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            chainOfSupply = string(abi.encodePacked( chainOfSupply, " ( ", supplier_address_str, " : ", supplier_name , " ) -> \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
         }
-        
+        chainOfSupply = string(abi.encodePacked(chainOfSupply, " ", BuildingName));
         return chainOfSupply;
     } 
 
