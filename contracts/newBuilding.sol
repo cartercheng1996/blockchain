@@ -105,7 +105,7 @@ contract newBuilding {
 
     // function which allows public to see whole supply chain of the material assigned at particular 'assignementId'
     function showSupplyChain (uint assignId) public view returns (string memory chainOfSupply) {
-        require((supplyChain[assignId].length > 0) == true, "Please try again as requested supply chain number was not found");
+        require((supplyChain[assignId].length > 0) == false, "Please try again as requested supply chain number was not found");
         chainOfSupply = "\n";
         string memory  supplier_address_str;
         string memory supplier_name;
@@ -218,4 +218,3 @@ contract newBuilding {
     }
 
 }    
-
