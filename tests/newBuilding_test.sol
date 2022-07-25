@@ -22,6 +22,7 @@ contract testSuite {
     address acc4;
     newBuilding newBuilding_test;
     newBatch newBatch_test;
+    newBatch newBatch_test2;
 
     /// 'beforeAll' runs before all other tests
     /// More special functions are: 'beforeEach', 'beforeAll', 'afterEach' & 'afterAll'
@@ -83,8 +84,8 @@ contract testSuite {
             "should be same address as acc0"
         );
         // test showSupplyChain function when it is empty list just after calling constructor.
-        newBuilding_test.showSupplyChain(1);
-        Assert.ok(true, "Method execution should be ok");
+        // newBuilding_test.showSupplyChain(1);
+        // Assert.ok(true, "Method execution should be ok");
         // test showOverviewOfMaterial with requested material was not found
         try newBuilding_test.showOverviewOfMaterial("steel") {
             Assert.ok(false, "Method execution should fail");
@@ -181,8 +182,10 @@ contract testSuite {
         );
     }
 
+    /// This is to test if assignMaterial function can run correctly
+    /// #sender: account-1
     function checkassignMaterialSuccess() public {
-        // Initilised new building contract by calling constuctor
+
         newBatch_test = new newBatch(acc3, "ABCsteel", "steel", 2, "ton");
         address[] memory supplAddresses = new address[](1);
         supplAddresses[0] = (address(acc3));
@@ -196,5 +199,80 @@ contract testSuite {
             supplNames,
             address(newBatch_test)
         );
+
+        newBatch_test2 = new newBatch(acc4, "ADwood", "wood", 5, "ton");
+        address[] memory supplAddresses2 = new address[](1);
+        supplAddresses2[0] = (address(acc4));
+        string[] memory supplNames2 = new string[](1);
+        supplNames2[0] = ("ADWood");
+        newBuilding_test.assignMaterial(
+            "steel",
+            20,
+            "ton",
+            supplAddresses2,
+            supplNames2,
+            address(newBatch_test2)
+        );
+        Assert.ok(true, "Excution success");
+    }
+
+    /// This is to test if assignMaterial function can run if the account is not registered
+    /// #sender: account-4
+    function checkassignMaterialFailed() public {
+
+        newBatch_test = new newBatch(acc3, "ABCsteel", "steel", 2, "ton");
+        address[] memory supplAddresses = new address[](1);
+        supplAddresses[0] = (address(acc3));
+        string[] memory supplNames = new string[](1);
+        supplNames[0] = ("ABCsteel");
+        try newBuilding_test.assignMaterial(
+            "steel",
+            10,
+            "ton",
+            supplAddresses,
+            supplNames,
+            address(newBatch_test)
+        ) {
+            Assert.ok(false, "Method execution should fail");
+        } catch Error (string memory reason) {
+            Assert.equal(
+                reason,
+                "Can only be executed by the registered Contractor",
+                "Failed with unexpected reason"
+            );
+        } catch (
+            bytes memory /* lowLevelData */
+        ) {
+            Assert.ok(false, "Failed unexpected");
+        }
+
+    }
+
+    /// This is to test all public "show-functions" working as expected(return correct data) after assignmaterial and addcontactor
+    /// #sender: account-0
+    function checkassignMaterialFailed2() public {
+
+        // test list material function when it is empty list just after calling constructor.
+        string[] memory listMaterials = newBuilding_test.showListOfMaterials();
+        Assert.equal(listMaterials.length, 0, "should be same return string");
+        // test showAllRegisteredContractors function when it is empty list just after calling constructor.
+        newBuilding.tempContractor[] memory allContractor;
+        allContractor = newBuilding_test.showAllRegisteredContractors();
+        Assert.equal(
+            allContractor.length,
+            1,
+            "Should be only one register contractor in array when it is just initilised"
+        );
+        Assert.equal(
+            allContractor[0].name,
+            "Developer",
+            "should be same name as Developer"
+        );
+        Assert.equal(
+            allContractor[0].addr,
+            acc0,
+            "should be same address as acc0"
+        );
+
     }
 }

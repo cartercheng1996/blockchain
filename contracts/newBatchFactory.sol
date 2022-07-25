@@ -1,5 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 
+//6452-22T2 Assignment2-part2 group SC9
+
+//README (main usage explanation):
+//newBatchFactory can be deploed by anybody but diring deployment msg.sender is recorded and becomes a "manufacturer". Only this address can use this deployed newBatchFactory
+//and to create new batches. Before any batch is created "manufacturer' has to record their name via 'recordNameOfManufacturer' function. 
+//'showAllUnsoldBatchesOfMaterialManufacturer' and 'showAllSoldBatchesOfMaterialManufacturer' will allow manufacturer to separately see unsold and sold (by manufacturer) batches of materials.
+
+//It should be noted that all manufacturers have freedom to redo/adjust this newBatchFacotry and newBatch contracts set to suit their needs but what is important that informatuion passed to newBuilding
+//contract from "newBatch.assignTo" function passess correct information. I.e. by design there might be numerous differect newBatchFactory-newBatch contracts tailored for each manufacturer individually and current
+//version of newBatchFactory-newBatch contracts is only one version of them. This gives manufacturers freedom to adjust and deploy newBatchFactory contract which best suits their manufacturing specifics.
+
+//Other functionality for specific functions is described in below comments
+
+
 pragma solidity >=0.8.00 <0.9.0;
 
 import "./newBatch.sol";
@@ -20,8 +34,9 @@ contract newBatchFactory {
     mapping (string => materialBatches) allMaterialBatchContracts;
     string[] private allMaterials;
     address private manufacturer;
-    string public manufacturerName;
-    bool public contractEnabled = true;
+    address private currentFactoryContract;
+    string private manufacturerName;
+    bool private contractEnabled = true;
 
     
     // constructor records address of the manufacturer. Each factory contract is only supposed to be managed by the same one manufacturer
@@ -30,6 +45,8 @@ contract newBatchFactory {
     //it would have recorded to many transactions from different manufacturers)
     constructor () {
         manufacturer = msg.sender;
+        currentFactoryContract = address(this);
+        
     } 
 
     modifier onlyByManufacturer() {
@@ -58,6 +75,15 @@ contract newBatchFactory {
         manufacturerName = name;
     }
 
+    //showing general information about newBuildingFactory contract
+    function generalInformation () public view returns (string memory Manufacturer_Name,  address Manufacturer_Address, address BatchFactory_contractAddress, bool ContractIsEnabled) {
+        Manufacturer_Name = manufacturerName;
+        Manufacturer_Address = manufacturer;
+        BatchFactory_contractAddress = currentFactoryContract;
+        ContractIsEnabled = contractEnabled;
+        
+        return (Manufacturer_Name, Manufacturer_Address, BatchFactory_contractAddress, ContractIsEnabled);
+    }
 
     // function to create new building contract. It is accessable to everybody and 'msg.sender' is recorded as developer bioth here and in relevant building contract
     function createNewBatch (string memory materialName, uint quantity, string memory quantityUnit) public onlyByManufacturer contract_Enabled  manufacturerNameNotEmpty {

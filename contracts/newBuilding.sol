@@ -1,6 +1,32 @@
 // SPDX-License-Identifier: UNLICENSED
 
+//6452-22T2 Assignment2-part2 group SC9
+
+
+//README (main usage explanation):
+//This is contract from which public can access trusted information backed up by immutability of blockchain.
+//This contract represents one building and stores all info related to this building.
+//Public can see:
+// 1) general inforamtion about the building (via below function 'generalInfo');
+// 2) list of all maerials which were delivered to this building (via below function 'showListOfMaterials');
+// 3) overview for each material of interest (via below function 'showOverviewOfMaterial'). 
+//Here public can see all 'newBatch' contracts for the material of interest (e.g.steel etc.) which were assigned to this building, 'assignmentId' at which this particular newBatch was assigned
+//and quantity of material assigned at this 'assignementId'.
+// 'assignmentId' is needed because the same newBatch can be part of different assignments if different contractors from this building owned share of the same newBatch contract and assigned their shares
+// 4) knowing  'newBatch' contract of interest public would be able to access relevant 'newBatch' contract and via hash of conformance certificat stored in 'newBatch' contract with help of reverse oracle public would be able to 
+// retrive copy of conformace certificate from off-chain storage (oracle implemented in front-end). Hash would ve confirmation of the immutability of this certificate;
+// 5) knowing "assignemntId" of interest public would be able to request information on supply chain for this assignement (via below function 'showSupplyChain'). this will return addresses and names of all 
+// contractors and manufacturer who owned this material from manufacturer till the assignemt to the building.
+//6) public will be able to see all registered on this building contractors (via below function 'showAllRegisteredContractors')
+
+//Developer have to register all contractors working on this building (via below function 'addContractor') before registered contractor can assign any materials to the building.
+//Crucial for contractors is 'assignMaterial' external function called from within newBatch contract. It can be called only by registered in 'newBuilding' contract contractor.
+
+//Further functionality is described in below comments to the functions
+
+
 pragma solidity >=0.8.00 <0.9.0;
+
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol";
@@ -72,9 +98,6 @@ contract newBuilding {
         return (Building_Name, Building_Address, Developer_Address);
     }
     
-    
-    mapping (address => string) public BatchCertificate; //(material batch contract address -> hash of certificate). It will be used to retrive certificate
-    
 
 
     // function to see all materil names assigned to the building (i.e. steel, glass, timber etc.)
@@ -105,7 +128,7 @@ contract newBuilding {
 
     // function which allows public to see whole supply chain of the material assigned at particular 'assignementId'
     function showSupplyChain (uint assignId) public view returns (string memory chainOfSupply) {
-        require((supplyChain[assignId].length > 0) == false, "Please try again as requested supply chain number was not found");
+        require((supplyChain[assignId].length > 0) == true, "Please try again as requested supply chain number was not found");
         chainOfSupply = "\n";
         string memory  supplier_address_str;
         string memory supplier_name;
@@ -208,7 +231,7 @@ contract newBuilding {
     //function for disabling active function of the contract and allowing onlyew view function to be accessible
     //this function is called from parent factory contract only by developer of this building
     function disableOrEnableContract () external {
-        require(msg.sender == factoryContractAddress, "Only factory contract can call this function");
+        require(msg.sender == factoryContractAddress, "Only parent 'newBuildingFactory' contract can call this function");
         contractIsDisabled = !contractIsDisabled;
     }
     

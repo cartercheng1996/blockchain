@@ -1,5 +1,20 @@
 // SPDX-License-Identifier: UNLICENSED
 
+//6452-22T2 Assignment2-part2 group SC9
+
+
+//README (main usage explanation):
+//This newBuildingFactory contract is supposed to be the only and central repository for all newBuilding contracts. This is done to ensure that there is one point of contact for the public
+//and to ensure consistency between information recorded for different building so that public does not get confused by possible inconsistencies which could arrise in other case.
+//Deployment of this contract done once and then everybody who creates 'newBuilding' contract via function 'createNewBuilding' (below) becomes a developer of this newBuilding contract.
+//This 'newBuildingFactory' keeps record of identification information for all 'newBuildng' contract deployed via  'createNewBuilding' function. It as well allows to disable contract 
+// (only by Developer) due to 2 reasons: building was complete (via below function 'disableCompletedBuilding') or if 'newBuilding' was wrongly created (via below function 'disableWrongContract')
+//while disabling it stores relevant contract into separate storage and allows public to see all "wrong" 'newBuilding' contracts (via below function 'showListOfWrongContracts')
+// or all completed coompleted buildings (via below function 'showListOfCompletedBuildings') or all currently active 'newBuilding' contracts (via below fucntion 'showListOfNewBuildings').
+//When disabling 'newBulding' contracts only theri active functionality is switched off but view functionality remain accessible to the public.
+//Further details of functionality are described in below comments
+
+
 pragma solidity >=0.8.00 <0.9.0;
 
 import "./newBuilding.sol";

@@ -1,12 +1,28 @@
 // SPDX-License-Identifier: UNLICENSED
+
+//6452-22T2 Assignment2-part2 group SC9
+
 // Author : E. Omer Gul
 //co-authored: Aliaksei Beraziuk
 
+
+
+//README (main usage explanation):
 // This is a contract for a material batch
+//Each batch contract records all information on ownership of any share of material from this batch. for example:
+//- if 100 tonns of steel were produced as one batch by manufacturer
+//-before starting to sell any material from this batch manufacturer has to record hash of the conformance certificate for this batch (using reverse oracle)
+//this has will be later used by oracle to return proven to be authentic conformace certificate file (e.g. PDF) to the user;
+//- manufacturer sells 30 tonns to contractor1, 30 tonns to contractor2 and 40tonns to contractor3 (all this is recorded)
+//- then all contractors can resell whole or share of their owned material from this batch (this as well will be recorded)
+//- eventually final contractor in the chain will call "assignTo' funcrtion (below) from this batch with will make a call to "newBuilding" contract
+//and pass all relevant information about batch and previous owners of this share of the bacth to the "newBuilding" contract where public will be able to access this info
+//further details of functionality are described in below comments to the functions
+
+
 
 pragma solidity >=0.8.00 <0.9.0;
 
-import "https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol";
 
 
 contract newBatch {
@@ -38,7 +54,7 @@ contract newBatch {
     uint private initialBatchMaterialQuantity;
     uint private unassignedQuantity; // ex :200, 10
     string private quantityUnit; // ex: kg, ton, m3
-    address private manufacturer;
+    address private manufacturer; //records address of manufacturer
     address private parentFactoryContractAddress; // used once to update parent factory contract with information that manufacturer has sold all material from this batch via "transfer" function
     address[] private allBuildingToWhichAssigned; // which buildings has this contract been assigned to 
     address private thisBatchContractAddress;
@@ -141,8 +157,7 @@ contract newBatch {
         (bool success, bytes memory result) = buildingAddr.call(abi.encodeWithSignature("assignMaterial(string,uint256,string,address[],string[],address)", materialType,  quantity, quantityUnit, supplAddresses, supplNames, thisBatchContractAddress));   //,     
                 
         result = result;
-        //string memory reason = abi.decode(result.slice(4, result.length-4), (string));
-        require(success == true, "Material assignment failure");
+        require(success == true, "Material assignment failure. Possible reason: you are not registered contractor on the building you assign material to");
 
         allBuildingToWhichAssigned.push(buildingAddr);
      
@@ -156,7 +171,6 @@ contract newBatch {
             if (msg.sender == manufacturer) {
                 (success, result) = parentFactoryContractAddress.call(abi.encodeWithSignature("materialFullySoldFromManufacturer(string,address)", materialType, thisBatchContractAddress));
                 result = result;
-                //string memory reason = abi.decode(result.slice(4, result.length-4), (string));
                 require(success == true, "External call to parent factory contract failure");
             }
             delete currentOwnwers[msg.sender];
@@ -242,7 +256,6 @@ contract newBatch {
             if (msg.sender == manufacturer) {
                 (bool success, bytes memory result) = parentFactoryContractAddress.call(abi.encodeWithSignature("materialFullySoldFromManufacturer(string,address)", materialType, thisBatchContractAddress));
                 result = result;
-                //string memory reason = abi.decode(result.slice(4, result.length-4), (string));
                 require(success == true, "External call to parent factory contract failure");
             }
             delete currentOwnwers[msg.sender];
