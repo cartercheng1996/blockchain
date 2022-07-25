@@ -88,6 +88,14 @@ contract testSuite {
         // test showSupplyChain function when it is empty list just after calling constructor.
         newBuilding_test.showSupplyChain(1);
         Assert.ok(true, "Method execution should be ok");
+        // test showOverviewOfMaterial with requested material was not found
+        try newBuilding_test.showOverviewOfMaterial("steel"){
+            Assert.ok(false , "Method execution should fail");
+        } catch Error ( string memory reason ) {
+            Assert.equal (reason , "Please try again as requested material was not found", "Failed with unexpected reason");
+        } catch ( bytes memory /* lowLevelData */) {
+            Assert.ok(false , "Failed unexpected");
+        }
     }
 
     /// This is to test if addContractor function can only allow developer to call it
@@ -127,17 +135,42 @@ contract testSuite {
             Assert.ok(false , "Failed unexpected");
         }
     }
-    function checkSuccess2() public pure returns (bool) {
+
+    /// This is to test if showContractor function can return value corretlly
+    /// #sender: account-0
+    function checkshowContractorsuccess() public {
+        newBuilding.tempContractor[] memory allContractor;
+        allContractor = newBuilding_test.showAllRegisteredContractors();
+        Assert.equal(
+            allContractor.length,
+            3,
+            "Should be 3 register contractor in array"
+        );
+        Assert.equal(
+            allContractor[0].name,
+            "Developer",
+            "should be same name as Developer"
+        );
+        Assert.equal(
+            allContractor[0].addr,
+            acc0,
+            "should be same address as acc0"
+        );
+        Assert.equal(
+            allContractor[1].name,
+            "testConstructor1",
+            "should be same name as Developer"
+        );
+        Assert.equal(
+            allContractor[1].addr,
+            acc1,
+            "should be same address as acc1"
+        );
+
+    }
+    function checkassignMaterialSuccess() public pure returns (bool) {
         // Use the return value (true or false) to test the contract
         return true;
     }
 
-    /// Custom Transaction Context: https://remix-ide.readthedocs.io/en/latest/unittesting.html#customization
-    /// #sender: account-1
-    /// #value: 100
-    function checkSenderAndValue() public payable {
-        // account index varies 0-9, value is in wei
-        Assert.equal(msg.sender, TestsAccounts.getAccount(1), "Invalid sender");
-        Assert.equal(msg.value, 100, "Invalid value");
-    }
 }

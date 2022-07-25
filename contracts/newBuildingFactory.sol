@@ -4,7 +4,7 @@ pragma solidity >=0.8.00 <0.9.0;
 
 import "./newBuilding.sol";
 
-import "@openzeppelin/contracts/utils/Strings.sol";
+// import "@openzeppelin/contracts/utils/Strings.sol";
 
 
 // suggestion on factory inmplementation taked from here: https://blog.logrocket.com/cloning-solidity-smart-contracts-factory-pattern/
@@ -15,6 +15,13 @@ contract newBuildingFactory {
         string buildingName;
         address developer;
     }
+
+    //this struct is separately created for more convenient usage for as a temporary storage in "show..." functions
+    struct tempForReturn {
+            string name;
+            address addr;
+           
+        }
 
     //mapping-array pairs to record contracts' addresses and state of those contracts
     //array is needed for looping, mapping is good for cheap and quick retieval of information
@@ -135,32 +142,29 @@ contract newBuildingFactory {
     
     
     // function allowing everybody to see list of all active building contracts
-    function showListOfNewBuildings() public view returns (string memory allNewBuildings) {
-        allNewBuildings = ":\n";
-        string memory building_address_str;
-        string memory building_name_str;
+    function showListOfNewBuildings() public view returns (tempForReturn[] memory) {
+        
+        tempForReturn[] memory allNewBuildings = new tempForReturn[](allNewBuildingsAddresses.length); //https://blog.finxter.com/how-to-return-an-array-of-structs-in-solidity/
         
         for (uint i=0; i<allNewBuildingsAddresses.length; i++) {
-            building_address_str = Strings.toHexString(allNewBuildingsAddresses[i]);
-            building_name_str = listOfNewBuildings[allNewBuildingsAddresses[i]].buildingName;
-            
-            allNewBuildings = string(abi.encodePacked( allNewBuildings, " ( ", building_name_str, " -> ", building_address_str , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            tempForReturn memory t;
+            t.name = listOfNewBuildings[allNewBuildingsAddresses[i]].buildingName;
+            t.addr = allNewBuildingsAddresses[i];
+            allNewBuildings[i] = t;
         }
-        
+
         return allNewBuildings;
     } 
 
 
     // function allowing everybody to see list of all disabled 'wrong' building contracts
-    function showListOfWrongContracts() public view returns (string memory allWrongContracts) {
-        allWrongContracts = ":\n";
-        string memory building_address_str;
-        string memory building_name_str;
+    function showListOfWrongContracts() public view returns (tempForReturn[] memory) {
+        tempForReturn[] memory allWrongContracts = new tempForReturn[](allWrongContractsAddresses.length);  // https://blog.finxter.com/how-to-return-an-array-of-structs-in-solidity/
         for (uint i=0; i<allWrongContractsAddresses.length; i++) {
-            building_address_str = Strings.toHexString(allWrongContractsAddresses[i]);
-            building_name_str = listOfWrongContracts[allWrongContractsAddresses[i]].buildingName;
-            
-            allWrongContracts = string(abi.encodePacked( allWrongContracts, " ( ", building_name_str, " -> ", building_address_str , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            tempForReturn memory t;
+            t.name = listOfWrongContracts[allWrongContractsAddresses[i]].buildingName;
+            t.addr = allWrongContractsAddresses[i];
+            allWrongContracts[i] = t;
         }
         
         return allWrongContracts;
@@ -168,15 +172,13 @@ contract newBuildingFactory {
 
 
     // function allowing everybody to see list of all disabled already completed building contracts
-    function showListOfCompletedBuildings() public view returns (string memory allCompletedBuildings) {
-        allCompletedBuildings = ":\n";
-        string memory building_address_str;
-        string memory building_name_str;
+    function showListOfCompletedBuildings() public view returns (tempForReturn[] memory) {
+        tempForReturn[] memory allCompletedBuildings = new tempForReturn[](allCompletedBuildingsAddresses.length);  // https://blog.finxter.com/how-to-return-an-array-of-structs-in-solidity/
         for (uint i=0; i<allCompletedBuildingsAddresses.length; i++) {
-            building_address_str = Strings.toHexString(allCompletedBuildingsAddresses[i]);
-            building_name_str = listOfCompletedBuildings[allCompletedBuildingsAddresses[i]].buildingName;
-            
-            allCompletedBuildings = string(abi.encodePacked( allCompletedBuildings, " ( ", building_name_str, " -> ", building_address_str , " ) \n" ));  //https://stackoverflow.com/questions/47129173/how-to-convert-uint-to-string-in-solidity
+            tempForReturn memory t;
+            t.name = listOfCompletedBuildings[allCompletedBuildingsAddresses[i]].buildingName;
+            t.addr = allCompletedBuildingsAddresses[i];
+            allCompletedBuildings[i] = t;
         }
         
         return allCompletedBuildings;
