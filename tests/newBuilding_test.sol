@@ -185,10 +185,9 @@ contract testSuite {
     /// This is to test if assignMaterial function can run correctly
     /// #sender: account-1
     function checkassignMaterialSuccess() public {
-
-        newBatch_test = new newBatch(acc3, "ABCsteel", "steel", 2, "ton");
+        newBatch_test = new newBatch(acc1, "ABCsteel", "steel", 2, "ton");
         address[] memory supplAddresses = new address[](1);
-        supplAddresses[0] = (address(acc3));
+        supplAddresses[0] = (address(acc1));
         string[] memory supplNames = new string[](1);
         supplNames[0] = ("ABCsteel");
         newBuilding_test.assignMaterial(
@@ -199,14 +198,19 @@ contract testSuite {
             supplNames,
             address(newBatch_test)
         );
+        Assert.ok(true, "Excution success");
+    }
 
-        newBatch_test2 = new newBatch(acc4, "ADwood", "wood", 5, "ton");
+    /// This is to test if assignMaterial function can run correctly
+    /// #sender: account-2
+    function checkassignMaterialSuccess2() public {
+        newBatch_test2 = new newBatch(acc2, "ADwood", "wood", 5, "ton");
         address[] memory supplAddresses2 = new address[](1);
-        supplAddresses2[0] = (address(acc4));
+        supplAddresses2[0] = (address(acc2));
         string[] memory supplNames2 = new string[](1);
         supplNames2[0] = ("ADWood");
         newBuilding_test.assignMaterial(
-            "steel",
+            "wood",
             20,
             "ton",
             supplAddresses2,
@@ -217,24 +221,25 @@ contract testSuite {
     }
 
     /// This is to test if assignMaterial function can run if the account is not registered
-    /// #sender: account-4
+    /// #sender: account-3
     function checkassignMaterialFailed() public {
-
         newBatch_test = new newBatch(acc3, "ABCsteel", "steel", 2, "ton");
         address[] memory supplAddresses = new address[](1);
         supplAddresses[0] = (address(acc3));
         string[] memory supplNames = new string[](1);
         supplNames[0] = ("ABCsteel");
-        try newBuilding_test.assignMaterial(
-            "steel",
-            10,
-            "ton",
-            supplAddresses,
-            supplNames,
-            address(newBatch_test)
-        ) {
+        try
+            newBuilding_test.assignMaterial(
+                "steel",
+                10,
+                "ton",
+                supplAddresses,
+                supplNames,
+                address(newBatch_test)
+            )
+        {
             Assert.ok(false, "Method execution should fail");
-        } catch Error (string memory reason) {
+        } catch Error(string memory reason) {
             Assert.equal(
                 reason,
                 "Can only be executed by the registered Contractor",
@@ -245,34 +250,116 @@ contract testSuite {
         ) {
             Assert.ok(false, "Failed unexpected");
         }
+    }
 
+    /// This is to test if assignMaterial function can run correctly
+    /// #sender: account-2
+    function checkassignMaterialSuccess3() public {
+        newBatch_test2 = new newBatch(acc2, "BCwood", "wood", 15, "kg");
+        address[] memory supplAddresses2 = new address[](1);
+        supplAddresses2[0] = (address(acc2));
+        string[] memory supplNames2 = new string[](1);
+        supplNames2[0] = ("BCWood");
+        newBuilding_test.assignMaterial(
+            "wood",
+            20,
+            "packs",
+            supplAddresses2,
+            supplNames2,
+            address(newBatch_test2)
+        );
+        Assert.ok(true, "Excution success");
     }
 
     /// This is to test all public "show-functions" working as expected(return correct data) after assignmaterial and addcontactor
     /// #sender: account-0
-    function checkassignMaterialFailed2() public {
-
-        // test list material function when it is empty list just after calling constructor.
+    function checkpublicfunctionsuccess() public {
+        // test list material function when it is assign two materials.
         string[] memory listMaterials = newBuilding_test.showListOfMaterials();
-        Assert.equal(listMaterials.length, 0, "should be same return string");
-        // test showAllRegisteredContractors function when it is empty list just after calling constructor.
-        newBuilding.tempContractor[] memory allContractor;
-        allContractor = newBuilding_test.showAllRegisteredContractors();
+        Assert.equal(listMaterials.length, 2, "should be same return string");
         Assert.equal(
-            allContractor.length,
-            1,
-            "Should be only one register contractor in array when it is just initilised"
+            listMaterials[0],
+            "steel",
+            "Should be show all assign material"
         );
         Assert.equal(
-            allContractor[0].name,
-            "Developer",
-            "should be same name as Developer"
-        );
-        Assert.equal(
-            allContractor[0].addr,
-            acc0,
-            "should be same address as acc0"
+            listMaterials[1],
+            "wood",
+            "Should be show all assign material"
         );
 
+        newBuilding.Batch[] memory batcheslist = newBuilding_test
+            .showOverviewOfMaterial("steel");
+
+        Assert.equal(
+            batcheslist.length,
+            1,
+            "There should be only 1 steel in list"
+        );
+        Assert.equal(
+            batcheslist[0].assignementId,
+            1,
+            "The first batch should be assign with id 1"
+        );
+
+        Assert.equal(
+            batcheslist[0].quantityAssigned,
+            10,
+            "Should be equal to 10 tons"
+        );
+        Assert.equal(
+            batcheslist[0].quantityUnit,
+            "ton",
+            "Should be equal to unit ton"
+        );
+
+        batcheslist = newBuilding_test.showOverviewOfMaterial("wood");
+
+        Assert.equal(
+            batcheslist.length,
+            2,
+            "There should be only 2 steel in list"
+        );
+        Assert.equal(
+            batcheslist[0].assignementId,
+            2,
+            "The second batch should be assign with id 2"
+        );
+
+        Assert.equal(
+            batcheslist[0].quantityAssigned,
+            20,
+            "Should be equal to 20 tons"
+        );
+        Assert.equal(
+            batcheslist[0].quantityUnit,
+            "ton",
+            "Should be equal to unit ton"
+        );
+
+        Assert.equal(
+            batcheslist.length,
+            2,
+            "There should be only 2 steel in list"
+        );
+        Assert.equal(
+            batcheslist[1].assignementId,
+            3,
+            "The second batch should be assign with id 2"
+        );
+
+        Assert.equal(
+            batcheslist[1].quantityAssigned,
+            20,
+            "Should be equal to 20 tons"
+        );
+        Assert.equal(
+            batcheslist[1].quantityUnit,
+            "packs",
+            "Should be equal to unit packs"
+        );
+
+        string memory chainOfSupply = newBuilding_test.showSupplyChain(1);
+        
     }
 }
